@@ -9,9 +9,10 @@ df_casos = pd.read_csv("casos.csv")
 # Convertir fechas si es necesario
 df_casos['Fecha/Hora de cierre'] = pd.to_datetime(df_casos['Fecha/Hora de cierre'], errors='coerce')
 
-# Normalizar nombres y eliminar casos sin 'Propietario al cierre'
+# Normalizar nombres y eliminar registros vacíos o no asignados
 df_casos['Propietario al cierre'] = df_casos['Propietario al cierre'].astype(str).str.strip().str.title()
-df_casos = df_casos[df_casos['Propietario al cierre'] != ""]
+df_casos = df_casos[df_casos['Propietario al cierre'].notna()]
+df_casos = df_casos[df_casos['Propietario al cierre'].str.len() > 0]
 
 # Sidebar para seleccionar agentes
 agentes = sorted(df_casos['Propietario al cierre'].unique())
