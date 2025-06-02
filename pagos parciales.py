@@ -30,9 +30,12 @@ frecuencia = frecuencia_map[frecuencia_opcion]
 # Filtrar DataFrame por agentes seleccionados
 df_filtrado = df_casos[df_casos['Propietario al cierre'].isin(seleccion)]
 
-# Agrupar por fecha según frecuencia
+# Agrupar por fecha según frecuencia con etiqueta al inicio del periodo
 df_filtrado.set_index('Fecha/Hora de cierre', inplace=True)
-df_grouped = df_filtrado.groupby([pd.Grouper(freq=frecuencia), 'Propietario al cierre']).size().reset_index(name='Casos cerrados')
+df_grouped = df_filtrado.groupby([
+    pd.Grouper(freq=frecuencia, label='left'),
+    'Propietario al cierre'
+]).size().reset_index(name='Casos cerrados')
 
 # Título
 st.title("Casos cerrados por agente")
