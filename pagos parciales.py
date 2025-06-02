@@ -17,19 +17,33 @@ df_casos = df_casos[df_casos['Propietario al cierre'].str.strip() != ""]
 agentes = sorted(df_casos['Propietario al cierre'].unique())
 seleccion = st.multiselect("Selecciona agente(s):", agentes, default=agentes)
 
-# Filtrar DataFrame
+# Selector de frecuencia
+frecuencia_map = {
+    'Diaria': 'D',
+    'Semanal': 'W',
+    'Mensual': 'M'
+}
+frecuencia_opcion = st.selectbox("Selecciona la frecuencia de agrupación:", list(frecuencia_map.keys()))
+frecuencia = frecuencia_map[frecuencia_opcion]
+
+# Filtrar DataFrame por agentes seleccionados
 df_filtrado = df_casos[df_casos['Propietario al cierre'].isin(seleccion)]
 
-# Agrupar por agente
-conteo = df_filtrado['Propietario al cierre'].value_counts().reset_index()
-conteo.columns = ['Agente', 'Casos cerrados']
+# Agrupar por fecha según frecuencia
+df_filtrado.set_index('Fecha/Hora de cierre', inplace=True)
+df_grouped = df_filtrado.groupby([pd.Grouper(freq=frecuencia), 'Propietario al cierre']).size().reset_index(name='Casos cerrados')
 
 # Título
 st.title("Casos cerrados por agente")
 
-# Gráfico
-plt.figure(figsize=(10, 6))
-sns.barplot(data=conteo, x='Casos cerrados', y='Agente', palette='Blues_d')
-plt.xlabel("Número de casos cerrados")
-plt.ylabel("Agente")
+# Gráfico de líneas
+plt.figure(figsize=(12, 6))
+sns.lineplot(data=df_grouped, x='Fecha/Hora de cierre', y='Casos cerrados', hue='Propietario al cierre', marker='o')
+plt.xlabel("Fecha")
+plt.ylabel("Casos cerrados")
+plt.title(f"Casos cerrados ({frecuencia_opcion.lower()}) por agente")
+plt.xticks(rotation=45)
 st.pyplot(plt)
+
+# Restaurar índice por si se usa más adelante
+df_filtrado.reset_index(inplace=True)
