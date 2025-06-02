@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 df_casos = pd.read_csv("casos.csv")
 df_casos['Fecha/Hora de cierre'] = pd.to_datetime(df_casos['Fecha/Hora de cierre'], errors='coerce')
 df_casos['Propietario al cierre'] = df_casos['Propietario al cierre'].astype(str).str.strip().str.title()
+df_casos = df_casos[df_casos['Fecha/Hora de cierre'].dt.year == 2025]
 df_casos = df_casos[df_casos['Propietario al cierre'].notna()]
 df_casos = df_casos[df_casos['Propietario al cierre'].str.len() > 0]
 
@@ -19,6 +20,7 @@ df_casos = df_casos[df_casos['Propietario al cierre'].str.len() > 0]
 df_ftes = pd.read_csv("ftes.csv", skiprows=1)
 df_ftes['fecha_asig'] = pd.to_datetime(df_ftes['fecha_asig'], errors='coerce')
 df_ftes['kavako_asig'] = df_ftes['kavako_asig'].astype(str).str.strip().str.title()
+df_ftes = df_ftes[df_ftes['fecha_asig'].dt.year == 2025]
 df_ftes = df_ftes[df_ftes['kavako_asig'].notna()]
 df_ftes = df_ftes[df_ftes['kavako_asig'].str.len() > 0]
 
@@ -40,7 +42,7 @@ if frecuencia == 'D':
 elif frecuencia == 'W':
     fecha_min = hoy - timedelta(weeks=16)
 else:
-    fecha_min = pd.to_datetime("2024-01-01")
+    fecha_min = pd.to_datetime("2025-01-01")
 
 # Selector de vista
 vista = st.sidebar.radio("¿Qué deseas visualizar?", options=["Casos cerrados", "Casos asignados", "Ambos"])
