@@ -43,6 +43,7 @@ plt.xlabel("Fecha")
 plt.ylabel("Casos cerrados")
 plt.title(f"Casos cerrados ({frecuencia_opcion.lower()}) por agente")
 plt.xticks(rotation=45)
+plt.legend(title="Agente")
 
 # Agregar etiquetas en los puntos
 for line in lineplot.lines:
