@@ -29,18 +29,18 @@ frecuencia_map = {
     'Semanal': 'W',
     'Mensual': 'M'
 }
-frecuencia_opcion = st.selectbox("Selecciona la frecuencia de agrupación:", list(frecuencia_map.keys()))
+frecuencia_opcion = st.sidebar.selectbox("Selecciona la frecuencia de agrupación:", list(frecuencia_map.keys()))
 frecuencia = frecuencia_map[frecuencia_opcion]
 
 # Selector de vista
-vista = st.radio("¿Qué deseas visualizar?", options=["Casos cerrados", "Casos asignados", "Ambos"])
+vista = st.sidebar.radio("¿Qué deseas visualizar?", options=["Casos cerrados", "Casos asignados", "Ambos"])
 
 if vista in ["Casos cerrados", "Ambos"]:
     # =========================
     # CASOS CERRADOS por agente
     # =========================
     agentes_cierre = sorted(df_casos['Propietario al cierre'].unique())
-    agentes_sel_cierre = st.multiselect("Selecciona agente(s) - Casos cerrados:", agentes_cierre, default=agentes_cierre)
+    agentes_sel_cierre = st.sidebar.multiselect("Selecciona agente(s) - Casos cerrados:", agentes_cierre, default=agentes_cierre)
     df_casos_filtrado = df_casos[df_casos['Propietario al cierre'].isin(agentes_sel_cierre)]
     df_casos_filtrado.set_index('Fecha/Hora de cierre', inplace=True)
     df_casos_grouped = df_casos_filtrado.groupby([
@@ -68,7 +68,7 @@ if vista in ["Casos asignados", "Ambos"]:
     # CASOS ASIGNADOS por agente
     # =========================
     agentes_asignados = sorted(df_ftes['kavako_asig'].unique())
-    agentes_sel_asignados = st.multiselect("Selecciona agente(s) - Casos asignados:", agentes_asignados, default=agentes_asignados)
+    agentes_sel_asignados = st.sidebar.multiselect("Selecciona agente(s) - Casos asignados:", agentes_asignados, default=agentes_asignados)
     df_ftes_filtrado = df_ftes[df_ftes['kavako_asig'].isin(agentes_sel_asignados)]
     df_ftes_filtrado.set_index('fecha_asig', inplace=True)
     df_asignados_grouped = df_ftes_filtrado.groupby([
