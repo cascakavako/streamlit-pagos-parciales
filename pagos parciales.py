@@ -36,13 +36,20 @@ df_grouped = df_filtrado.groupby([pd.Grouper(freq=frecuencia), 'Propietario al c
 # Título
 st.title("Casos cerrados por agente")
 
-# Gráfico de líneas
+# Gráfico de líneas con anotaciones
 plt.figure(figsize=(12, 6))
-sns.lineplot(data=df_grouped, x='Fecha/Hora de cierre', y='Casos cerrados', hue='Propietario al cierre', marker='o')
+lineplot = sns.lineplot(data=df_grouped, x='Fecha/Hora de cierre', y='Casos cerrados', hue='Propietario al cierre', marker='o')
 plt.xlabel("Fecha")
 plt.ylabel("Casos cerrados")
 plt.title(f"Casos cerrados ({frecuencia_opcion.lower()}) por agente")
 plt.xticks(rotation=45)
+
+# Agregar etiquetas en los puntos
+for line in lineplot.lines:
+    for x, y in zip(line.get_xdata(), line.get_ydata()):
+        if not pd.isna(y):
+            plt.text(x, y, f'{int(y)}', fontsize=8, ha='center', va='bottom')
+
 st.pyplot(plt)
 
 # Restaurar índice por si se usa más adelante
